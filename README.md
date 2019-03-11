@@ -1,11 +1,11 @@
 # my2pg-atlassian-confluence-jira
 
-MySQL to PostgreSQL migration using pgloader for Atlassian Confluence and Jira
+## MySQL to PostgreSQL migration using pgloader for Atlassian Confluence and Jira
 
 This scripts were created to migrate MySQL 5.6 based databases for Confluence and Jira Datacenter Editions
 There where a lot of assumptions so this code could require adjustments for any other environments like AWS or Azure
 
-Steps to run scripts:
+## Steps to run scripts:
 
 * Use one of the folder for migration "confluence" or "jira" - it is important as tables are different
 * Copy my2pg-step00-settings.sh.def to my2pg-step00-settings.sh and set up source and destination database details except of passwords
@@ -19,3 +19,8 @@ Steps to run scripts:
 ** Original schema could be generated using clean Jira install and set of plug-ins installed
 ** This has been used to compare how script is working and completely optional
 ** If you have issues with migration use this to analyse which table is failing rules ...
+
+## Remember Database Collation as it is important !!
+
+* Confluence - <https://confluence.atlassian.com/doc/database-setup-for-postgresql-173244522.html>
+* Jira - <https://confluence.atlassian.com/adminjiraserver/connecting-jira-applications-to-postgresql-938846851.html>
