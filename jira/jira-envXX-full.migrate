@@ -1,0 +1,108 @@
+--
+-- Main tables
+--
+load database
+   from      mysql://^^SRC_USER^^@^^SRC_HOST^^/^^SRC_DB^^
+   into postgresql://^^DST_USER^^@^^DST_HOST^^/^^DST_DB^^
+  with
+   drop schema, preserve index names, batch rows = 5000, batch concurrency = 2
+  cast
+   type bigint   when (= 20 precision)                   to bigint             drop typemod,
+   type int      when (= 11 precision)                   to integer            drop typemod,
+   type decimal  when (and (= 18 precision) (= 6 scale)) to "double precision" drop typemod,
+   type blob                                             to bytea              drop typemod using byte-vector-to-bytea
+  excluding table names matching ~/AO_/,~/JQUARTZ_/,~/propertydata/,~/clusteredjob/
+  alter schema '^^SRC_DB^^' rename to 'public'
+;
+
+--
+-- Jira "propertydata" table
+--
+load database
+   from      mysql://^^SRC_USER^^@^^SRC_HOST^^/^^SRC_DB^^
+   into postgresql://^^DST_USER^^@^^DST_HOST^^/^^DST_DB^^
+  with
+   preserve index names, batch rows = 5000, batch concurrency = 2
+  cast
+   type bigint   when (= 20 precision)                   to bigint             drop typemod,
+   type int      when (= 11 precision)                   to integer            drop typemod,
+   type decimal  when (and (= 18 precision) (= 6 scale)) to "double precision" drop typemod,
+   type blob                                             to oid                drop typemod using byte-vector-to-bytea
+  including only table names matching ~/propertydata/
+  alter schema '^^SRC_DB^^' rename to 'public'
+;
+
+--
+-- Jira "clusteredjob" table
+--
+load database
+   from      mysql://^^SRC_USER^^@^^SRC_HOST^^/^^SRC_DB^^
+   into postgresql://^^DST_USER^^@^^DST_HOST^^/^^DST_DB^^
+  with
+   preserve index names, batch rows = 5000, batch concurrency = 2
+  cast
+   type bigint   when (= 20 precision)                   to bigint             drop typemod,
+   type int      when (= 11 precision)                   to integer            drop typemod,
+   type decimal  when (and (= 18 precision) (= 6 scale)) to "double precision" drop typemod,
+   type blob                                             to bytea              drop typemod using byte-vector-to-bytea
+  including only table names matching ~/clusteredjob/
+  alter schema '^^SRC_DB^^' rename to 'public'
+;
+
+--
+-- Jira Scheduler Tables
+--
+load database
+   from      mysql://^^SRC_USER^^@^^SRC_HOST^^/^^SRC_DB^^
+   into postgresql://^^DST_USER^^@^^DST_HOST^^/^^DST_DB^^
+  with
+   preserve index names, batch rows = 5000, batch concurrency = 2
+  cast
+   type bigint   when (= 20 precision)                   to "numeric(18,0)"    drop typemod,
+   type int      when (= 11 precision)                   to "numeric(9, 0)"    drop typemod,
+   type smallint when (= 5 precision)                    to "numeric(4, 0)"    drop typemod,
+   type decimal  when (and (= 18 precision) (= 6 scale)) to "double precision" drop typemod,
+   type datetime                                         to timestamp          drop default using zero-dates-to-null,
+   type varchar  when (= 1 precision)                    to boolean            drop typemod,
+   type blob                                             to bytea              drop typemod using byte-vector-to-bytea,
+   type binary                                           to bytea              drop typemod using byte-vector-to-bytea
+  including only table names matching ~/JQUARTZ_/
+  excluding table names matching ~/JQUARTZ_JOB_DETAILS/,~/JQUARTZ_TRIGGERS/
+  alter schema '^^SRC_DB^^' rename to 'public'
+;
+load database
+   from      mysql://^^SRC_USER^^@^^SRC_HOST^^/^^SRC_DB^^
+   into postgresql://^^DST_USER^^@^^DST_HOST^^/^^DST_DB^^
+  with
+   preserve index names, batch rows = 5000, batch concurrency = 2
+  cast
+   type bigint   when (= 20 precision)                   to "numeric(18,0)"    drop typemod,
+   type int      when (= 11 precision)                   to "numeric(9, 0)"    drop typemod,
+   type smallint when (= 5 precision)                    to "numeric(4, 0)"    drop typemod,
+   type decimal  when (and (= 18 precision) (= 6 scale)) to "double precision" drop typemod,
+   type datetime                                         to timestamp          drop default using zero-dates-to-null,
+   type varchar  when (= 1 precision)                    to boolean            drop typemod,
+   type blob                                             to bytea              drop typemod using byte-vector-to-bytea,
+   type binary                                           to bytea              drop typemod using byte-vector-to-bytea
+  including only table names matching ~/JQUARTZ_JOB_DETAILS/,~/JQUARTZ_TRIGGERS/
+  alter schema '^^SRC_DB^^' rename to 'public'
+;
+
+--
+-- Active Objects
+--
+load database
+   from      mysql://^^SRC_USER^^@^^SRC_HOST^^/^^SRC_DB^^
+   into postgresql://^^DST_USER^^@^^DST_HOST^^/^^DST_DB^^
+  with
+   quote identifiers, preserve index names, batch rows = 5000, batch concurrency = 2
+  cast
+   type bigint                        when (= 20 precision)                   to bigint             drop typemod,
+   type int                           when (= 11 precision)                   to integer            drop typemod,
+--   type int with extra auto_increment when (= 11 precision)                   to integer            drop typemod,
+   type decimal                       when (and (= 18 precision) (= 6 scale)) to "double precision" drop typemod,
+   type datetime                                                              to timestamp          drop default using zero-dates-to-null
+  including only table names matching ~/AO_/
+  alter schema '^^SRC_DB^^' rename to 'public'
+;
+

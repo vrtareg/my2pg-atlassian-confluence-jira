@@ -1,0 +1,77 @@
+--
+-- Main tables
+--
+load database
+   from      mysql://^^SRC_USER^^@^^SRC_HOST^^/^^SRC_DB^^
+   into postgresql://^^DST_USER^^@^^DST_HOST^^/^^DST_DB^^
+  with
+   drop schema, preserve index names, batch rows = 5000, batch concurrency = 2
+  cast
+   type bigint   when (= 20 precision)                   to bigint             drop typemod,
+   type int      when (= 11 precision)                   to integer            drop typemod,
+   type decimal  when (and (= 18 precision) (= 6 scale)) to "double precision" drop typemod,
+   type datetime                                         to timestamp          drop default using zero-dates-to-null
+  excluding table names matching ~/AO_/, ~/EVENTS/, ~/SECRETS/, ~/SNAPSHOTS/, ~/PLUGINDATA/, ~/scheduler_clustered_jobs/
+  alter schema '^^SRC_DB^^' rename to 'public'
+  after load do
+   $$ alter sequence journalentry_entry_id_seq rename to seq_journal_entry_id; $$
+;
+
+--
+-- Confluence EVENTS, SECRETS, SNAPSHOTS, PLUGINDATA, scheduler_clustered_jobs tables
+--
+load database
+   from      mysql://^^SRC_USER^^@^^SRC_HOST^^/^^SRC_DB^^
+   into postgresql://^^DST_USER^^@^^DST_HOST^^/^^DST_DB^^
+  with
+   quote identifiers, preserve index names, batch rows = 5000, batch concurrency = 2
+  cast
+   type bigint   when (= 20 precision)                   to bigint             drop typemod,
+   type int      when (= 11 precision)                   to integer            drop typemod,
+   type decimal  when (and (= 18 precision) (= 6 scale)) to "double precision" drop typemod,
+   type blob                                             to bytea              drop typemod using byte-vector-to-bytea,
+   type longblob                                         to bytea              drop typemod using byte-vector-to-bytea,
+   type mediumblob                                       to bytea              drop typemod using byte-vector-to-bytea,
+   type datetime                                         to timestamp          drop default using zero-dates-to-null
+  -- decoding table names matching ~/EVENTS/, ~/SNAPSHOTS/ AS UTF8
+  including only table names matching ~/EVENTS/, ~/SECRETS/, ~/SNAPSHOTS/
+  excluding table names matching ~/AO_/
+  alter schema '^^SRC_DB^^' rename to 'public'
+;
+load database
+   from      mysql://^^SRC_USER^^@^^SRC_HOST^^/^^SRC_DB^^
+   into postgresql://^^DST_USER^^@^^DST_HOST^^/^^DST_DB^^
+  with
+   preserve index names, batch rows = 5000, batch concurrency = 2
+  cast
+   type bigint   when (= 20 precision)                   to bigint             drop typemod,
+   type int      when (= 11 precision)                   to integer            drop typemod,
+   type decimal  when (and (= 18 precision) (= 6 scale)) to "double precision" drop typemod,
+   type blob                                             to bytea              drop typemod using byte-vector-to-bytea,
+   type longblob                                         to bytea              drop typemod using byte-vector-to-bytea,
+   type mediumblob                                       to bytea              drop typemod using byte-vector-to-bytea,
+   type datetime                                         to timestamp          drop default using zero-dates-to-null
+  -- decoding table names matching ~/PLUGINDATA/, ~/scheduler_clustered_jobs/ AS UTF8
+  including only table names matching ~/PLUGINDATA/, ~/scheduler_clustered_jobs/
+  excluding table names matching ~/AO_/
+  alter schema '^^SRC_DB^^' rename to 'public'
+;
+
+--
+-- Active Objects
+--
+load database
+   from      mysql://^^SRC_USER^^@^^SRC_HOST^^/^^SRC_DB^^
+   into postgresql://^^DST_USER^^@^^DST_HOST^^/^^DST_DB^^
+  with
+   quote identifiers, preserve index names, batch rows = 5000, batch concurrency = 2
+  cast
+   type bigint                        when (= 20 precision)                   to bigint             drop typemod,
+   type int                           when (= 11 precision)                   to integer            drop typemod,
+--   type int with extra auto_increment when (= 11 precision)                   to integer            drop typemod,
+   type decimal                       when (and (= 18 precision) (= 6 scale)) to "double precision" drop typemod,
+   type datetime                                                              to timestamp          drop default using zero-dates-to-null
+  including only table names matching ~/AO_/
+  alter schema '^^SRC_DB^^' rename to 'public'
+;
+

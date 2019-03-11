@@ -1,0 +1,10 @@
+
+load database
+   from      mysql://^^SRC_USER^^@^^SRC_HOST^^/^^SRC_DB^^
+   into postgresql://^^DST_USER^^@^^DST_HOST^^/^^DST_DB^^
+  with
+   create no indexes, preserve index names, no foreign keys, data only,
+   batch rows = 5000, batch concurrency = 2
+  alter schema '^^SRC_DB^^' rename to 'public'
+;
+

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Following variables will be used to manipulate migration configurations
+# Sorry for duplication
+# Better approach is welcome
+# Copy my2pg-step00-settings.sh.def file as my2pg-step00-settings.sh and set up your settings
+
+# Source MySQL Database settings
+
+# This should be saved in ${HOME}/.my.cnf file and could be saved in group suffix format like in
+# https://dev.mysql.com/doc/refman/5.6/en/password-security-user.html
+# https://dev.mysql.com/doc/refman/5.6/en/environment-variables.html
+# https://dev.mysql.com/doc/refman/5.6/en/option-file-options.html#option_general_defaults-group-suffix
+# As pgloader don't use .my.cnf for now
+# https://github.com/dimitri/pgloader/issues/767
+
+export SRC_DB="Source Database Name"
+export SRC_HOST="Source Database Host Name"
+export SRC_USER="Source Database User Name"
+
+# Destination PostgreSQL Database settings
+
+# This should be saved in ${HOME}/.pgpass file to hide password
+# https://www.postgresql.org/docs/9.6/libpq-pgpass.html
+
+export DST_DB="Destination Database Name"
+export DST_HOST="Destination Database Host Name"
+export DST_USER="Destination Database User Name"
+
